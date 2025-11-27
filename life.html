@@ -1,0 +1,21 @@
+<!DOCTYPE HTML>
+<HTML>
+
+    <head>
+        <script type="text/javascript" src="libraries/p5/p5.js"></script>
+        <script type="text/javascript" src="life/main.js"></script>
+        <script type="text/javascript" src="life/Cell.js"></script>
+        <link rel="stylesheet" href="sketchstyle.css">
+
+    </head>
+
+    <body oncontextmenu="return false;">
+        <div class="button-tray">
+            <button id="play" onclick="loop()">Play!</button>
+            <button id="pause" onclick="noLoop()">Pause!</button>
+            <button id="clearCells" onclick="resetGame()">Clear!</button>
+        </div>
+        <div id="canvas-holder"> </div>
+    </body>
+
+</HTML>

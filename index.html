@@ -1,0 +1,157 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+      <meta http-equiv="Content-Style-Type" content="text/css" />
+      <meta name="generator" content="pandoc" />
+      <title>Ian McKenzie</title>
+      <style type="text/css">code{white-space: pre;}</style>
+      <link rel="stylesheet" href="/style.css" type="text/css" />
+      <!-- START FAVICON STUFF -->
+      <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+      <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+      <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+      <link rel="manifest" href="/site.webmanifest">
+      <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+      <meta name="msapplication-TileColor" content="#da532c">
+      <meta name="msapplication-config" content="/browserconfig.xml">
+      <meta name="theme-color" content="#ffffff">
+      <!-- END FAVICON STUFF -->
+   </head>
+   <body>
+      <div class="main">
+         <h1 id="ian-mckenzie">Ian McKenzie</h1>
+         <h2 class="section_head" id="about-me">• About me</h2>
+         <p>
+         Hi! My name's Ian. As of September 2025, I'm a Research Engineer at Google&nbsp;DeepMind. Previously, I was a Research Engineer at <a href=https://far.ai>FAR.AI</a>, contracted with OpenAI building Dangerous Capability and AI R&amp;D evaluations, ran the <a href=https://openreview.net/pdf?id=DwgRm72GQF>Inverse Scaling Prize</a>, and was a software engineering intern at <a href=https://ought.org>Ought</a>.
+         Before that, I did an MSc Artificial Intelligence at the University of Edinburgh.
+         Even more before that, I graduated from the University of St Andrews
+         with an MPhys Mathematics and Theoretical Physics (an integrated master's degree).
+         </p>
+         <p>
+          I got involved in AI safety research because I became concerned about the catastrophic risks posed by AGI
+           during my undergrad and came to the conclusion that working to ensure that
+          future AI is safe and beneficial for everyone is the most valuable thing I could do.
+         <h2 class="section_head" id="what-ive-done">• What I've done</h2>
+
+         <p>Even before discovering that AI research was what I wanted to do, I'd been
+            working my way towards programming as my main interest. It started with a
+            simple programming assignment in a maths module, followed by some small
+            Javascript projects done in my spare time. I found it so engaging and
+            <em>fun</em> that I started judging my module choices by how much coding they'd
+            let me do.
+         </p>
+         <p>Below is a selection of things that I've done, which will be updated as I
+            find time to write about them (i.e. rarely: last update 2020). Technically this website is an example of a project I've
+            worked on, but graphic design is not one of my core competencies, as evidenced
+            by the upcoming buttons:
+         </p>
+          <button type="button" class="link" onclick="location.href='/pong';" >
+            <h2>Pong with Deep Reinforcement Learning</h2>
+         </button>
+          <button type="button" class="link" onclick="location.href='/animations';" >
+            <h2>Master's Project in Nearly Rigid Networks</h2>
+         </button>
+          <button type="button" class="collapsible">
+            <h2>Discrete Optimisation</h2>
+         </button>
+         <div class="hidden" id="sa">
+           <p>This started as a class project for a maths module (inappropriately
+              named Symbolic Computation). I decided to implement <a
+                 href=https://bit.ly/2o1eYvE>Simulated
+              Annealing</a> (SA), having been inspired by
+              reading about Quantum Annealing for a physics
+              assignment.  It quickly expanded from just trying
+              to implement the heuristic on the <a
+                 href=https://en.wikipedia.org/wiki/Ising_model>ising
+              spin model</a> to applying it also on the <a
+                 href=https://en.wikipedia.org/wiki/Travelling_salesman_problem>Travelling
+              Salesman Problem</a> and implementing exact
+              solvers for both to check SA's performance.
+           </p>
+
+           <p> Here's SA finding the exact solution for ten randomly placed cities (which it did much faster than the deterministic methods): </p>
+           <img src="/sa_tsp.png" alt="SA vs BaB vs HK on TSP">
+
+           <p>The code for this project, and more details, are available on <a href=https://github.com/naimenz/Discrete-Optimisation>github</a>.</p>
+         </div>
+         <button type="button" class="collapsible">
+            <h2>Javascript projects</h2>
+         </button>
+         <div class="hidden" id="js">
+            <p>Here is a selection of the small Javascript projects I've done.
+               Many were written using the <a href="http://p5js.org/">p5.js library</a>, a choice inspired by <a href="https://www.youtube.com/channel/UCvjgXvBlbQiydffZU7m1_aw">The
+               Coding Train</a>.
+            </p>
+            <ul>
+               <li>
+                  <h3>Sierpiński Triangle</h3>
+                  <p>Using the Iterated Function System method I learnt
+                     from a module in Fractal Geometry, I wrote a piece of code
+                     that could be repurposed to draw many different fractals.
+                     One of the my favourites is the Sierpiński Triangle, which
+                     can be created by repeatedly removing the middle triangle
+                     from the image, and repeating this on all the smaller
+                     versions this creates. Click on the triangle below to
+                     generate the Sierpiński Triangle.
+                  </p>
+                  <iframe src="/triangle.html" frameborder="0" height="650px" width="800px"></iframe>
+               </li>
+               <li>
+                  <h3>Conway's Game of Life</h3>
+                  <p> Conway's game of
+                     life is the quintessential example of a cellular
+                     automaton. Each frame is a 'generation', and the
+                     squares (or cells) live or die according to a simple
+                     set of rules. Despite this simplicity, the game has
+                     been explored in vast depth, as can be seen on 
+                     <a href="http://www.conwaylife.com/wiki/Conway%27s_Game_of_Life">LifeWiki</a>.
+                     Below is an implementation I wrote for the Game of Life,
+                     again using p5.js. Left click to select cells, right 
+                     click to deselect them.
+                  </p>
+                  <iframe src="/life.html" frameborder="0" height="750px" width="800px"></iframe>
+               </li>
+               <li >
+                  <h3>Smart Rockets</h3>
+                  <p>These rockets evolve using a genetic algorithm to seek
+                     out the Goal &ndash; the red circle at the top of the box
+                     &ndash; while trying to avoid the obstacles in the way. Each
+                     rocket is assigned a fitness based on how close it got to
+                     the goal; the closer it got, the more likely it is to pass on its 'DNA' (set of vectors that define its path) to the next generation. Click and drag to add an obstacle.  
+                  </p>
+                  <iframe src="/rockets.html" frameborder="0" height="750px" width="750px"></iframe>
+               </li>
+               <li>
+                  <h3>Jump! A Generic Platformer</h3>
+                  <p>J!AGP is a platforming game prototype written in p5.js. To
+                     control Marco, use the WASD keys, and click to use his fire
+                     power. Click inside to begin.
+                  </p>
+                  <iframe src="/jump.html" frameborder="0" height="450px" width="750px"></iframe>
+               </li>
+            </ul>
+         </div>
+     </div>
+      <div class="right">
+      <iframe src="/sine/index.html" frameborder="0" height="700px" width="100%"></iframe>
+      <!-- adding collapsible buttons to hide longproject lists -->
+      <script>
+         var coll = document.getElementsByClassName("collapsible");
+         var i;
+         
+         for (i = 0; i < coll.length; i++) {
+           coll[i].addEventListener("click", function() {
+             this.classList.toggle("active");
+             var content = this.nextElementSibling;
+             console.log(content);
+             if (content.style.display === "block") {
+               content.style.display = "none";
+             } else {
+               content.style.display = "block";
+             }
+           });
+         }
+      </script>
+   </body>
+</html>

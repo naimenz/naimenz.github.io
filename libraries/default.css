@@ -1,0 +1,33 @@
+
+html {
+  height: 100%;
+}
+
+
+body {
+  height: 100%;
+  background: rgb(51,51,51); /* For browsers that do not support gradients */
+  background: -webkit-linear-gradient(rgb(51,51,51), rgb(100,100,100)); /* For Safari 5.1 to 6.0 */
+  background: -moz-linear-gradient(rgb(51,51,51), rgb(100,100,100)); /* For Firefox 3.6 to 15 */
+  background: linear-gradient(180deg,rgb(51,51,51), rgb(100,100,100)); /* Standard syntax */
+}
+
+#defaultCanvas0 {
+  display: block;
+  margin: auto;
+  border-radius: 10px;
+}
+
+#button, .button {
+  display: block;
+  margin: auto;
+  margin-top: 50px;
+  margin-bottom: 100px;
+  background-color: rgba(255,0,100,0.9);
+  color: rgb(255,255,255);
+  border: none;
+  font-size: 16;
+  padding: 20px 60px;
+  border-radius: 5px;
+
+}

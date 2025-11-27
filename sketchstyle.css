@@ -1,0 +1,47 @@
+body {
+    line-height: 1.4;
+    /* background-color: #EFEFEF; */
+    color: #333;
+    /* margin: 0 auto; */
+    max-width:750px;
+    padding-left: 10px;
+    /* border-right: thin solid #000; */
+
+}
+
+h1 {
+    font-size: 50px;
+}
+
+p, ul {
+    font-size: 22px;
+    text-align: justify;
+}
+
+button {
+    margin: 10px 10px 20px 10px;
+    padding: 10px;
+    background: transparent;
+    border: solid 1px #008B8B;
+    border-radius: 4px;
+}
+
+button:hover {
+    background-color: #8DEEEE;
+}
+
+button:active {
+    background-color: #008B8B;
+    color: white;
+    /* border: none; */
+}
+
+button:focus {
+    outline: 2px black;
+}
+
+/* adds underline to elements */
+.uline {
+    text-decoration: underline;
+}
+

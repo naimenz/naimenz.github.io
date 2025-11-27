@@ -1,0 +1,247 @@
+<!DOCTYPE html PUBLIC "-//W5C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+   <head>
+      <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+      <meta http-equiv="Content-Style-Type" content="text/css" />
+      <meta name="generator" content="pandoc" />
+      <title>Pong from pixels without "Pong from Pixels"</title>
+      <style type="text/css">code{white-space: pre;}</style>
+      <link rel="stylesheet" href="/style.css" type="text/css" />
+      <!-- START FAVICON STUFF -->
+      <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+      <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+      <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+      <link rel="manifest" href="/site.webmanifest">
+      <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+      <meta name="msapplication-TileColor" content="#da532c">
+      <meta name="msapplication-config" content="/browserconfig.xml">
+      <meta name="theme-color" content="#ffffff">
+      <!-- END FAVICON STUFF -->
+   </head>
+   <body>
+      <div class="main">
+        <h1 id="title">Pong from pixels without "Pong from Pixels"</h1>
+
+        <p>At the beginning of this summer I finished an undergraduate degree in maths
+        and physics and I decided to spend some time preparing for my master&rsquo;s
+        degree in AI by learning some reinforcement learning (RL). It&rsquo;s not like
+        there was a whole lot else to do this summer anyway. Before going into this I
+        had done a module on applied ML (which basically consisted of putting data into
+        scikit-learn functions without looking deeply at how they worked) and a general
+        idea of the basic structure of neural networks.</p> <p>The first part of the
+        post will outline the steps I took in learning ML and RL in case anyone with a
+        similar background is interested, and in the second part I will discuss the
+        challenges of implementing a Deep Q-Network (DQN) algorithm on Pong directly
+        from the <a
+        href="https://www.cs.toronto.edu/~vmnih/docs/dqn.pdf">original
+        paper.</a></p> <p>I&rsquo;ll also compare my approach and experience to the
+        blog post <a
+        href="http://karpathy.github.io/2016/05/31/rl/">Deep
+        Reinforcement Learning: Pong from Pixels</a>&nbsp;by Andrej Karpathy.</p>
+
+        <figure>
+            <img src="/pong_gif.gif" alt="DQN Pong agent winning">
+          <figcaption>Yes, this game was heavily cherrypicked but I'm so proud of him.</figcaption>
+        </figure>
+
+
+        <h2 class="section_head" id="part1">• Part I - Background</h2>
+        <p>I started by looking at <a
+        href="https://spinningup.openai.com/en/latest/user/introduction.html">Spinning
+        Up</a>&nbsp;by OpenAI and
+        reading their introduction. While reading it I thought I was understanding it
+        fairly well but when it came time to try the exercises and implement algorithms
+        for myself I realised I had no clue what was going on and decided to take a
+        step back.</p> <p>I&rsquo;m always happiest when I understand a topic from the
+        very basics. It&rsquo;s why I preferred pure maths to applied - you start from
+        the axioms and rarely have to rely on anything that you haven&rsquo;t proved
+        yourself earlier. For this reason I started reading Sutton and Barto&rsquo;s <a
+        href="http://incompleteideas.net/book/the-book.html">Reinforcement
+        Learning: An Introduction</a>&nbsp;(RLAI), a textbook by two of the early big
+        names in RL. I haven&rsquo;t read any other RL textbooks but I thoroughly
+        enjoyed the style and pacing of this book - plenty of explanation and
+        exercises.</p> <p>I read RLAI until I reached a section on neural networks
+        (Chapter 9), at which point I switched to Goodfellow&rsquo;s <a
+        href="https://www.deeplearningbook.org/">Deep
+        Learning</a>&nbsp;(DL), a modern classic on (deep) neural networks. I found
+        this book a little harder to follow as there were no exercises and fewer simple
+        examples, but it was very helpful nonetheless.</p> <p>To ensure that I was
+        understanding, I wrote my own symbol-to-symbol backpropagation code in Python
+        and used it to construct a basic neural net capable of achieving ~90% accuracy
+        on <a
+        href="http://yann.lecun.com/exdb/mnist/">MNIST</a>.
+        I also implemented a couple of different optimisers (SGD with momentum,
+        RMSprop), and a horrifically slow convolutional layer using for-loops. The DL textbook
+        provides enough detail to do all of this, but I checked my results against
+        PyTorch as I went along because working in high dimensions is tricky.</p>
+        <p>After I'd read to the end of Part II of DL and was happy that I understood the
+        fundamentals of building and training neural networks, I went back to RLAI and
+        read the rest of Part II of that book as well.</p> <p>It was at this point that
+        I started to stall out a little. I had decided to consolidate what I&rsquo;d
+        learnt by implementing all the different algorithms on the classic cart-pole
+        benchmark environment (using the incredibly convenient <a
+        href="https://gym.openai.com/">OpenAI
+        Gym</a>). I initially tried using the neural networks that I&rsquo;d written
+        from scratch myself, and then switched to using <a
+        href="https://pytorch.org/">PyTorch</a>.
+        I was getting mixed results - often they&rsquo;d learn but then after achieving
+        a good score for a few dozen episodes would crash and fail miserably. Sometimes
+        they&rsquo;d take hundreds of episodes to start learning at all. Even still
+        I&rsquo;m not sure if there were serious bugs in my implementations or if it
+        was just a combination of sensitivity to hyperparameters and high variance
+        methods.</p> <p>Either way, I was pleased that I had managed to train an agent
+        using the neural network code I&rsquo;d written from scratch, and decided that
+        I should move on instead of writing the same thing over and over hoping it
+        would be perfect. I needed a new challenge.</p>
+        <h2 class="section_head" id="part2">• Part II - DQN</h2>
+        <p>In deciding what to try next, I read two very useful essays - one about <a
+        href="http://amid.fish/reproducing-deep-rl">reproducing
+        a Deep RL paper</a>&nbsp;by Matthew Rahtz, and the <a
+        href="https://spinningup.openai.com/en/latest/spinningup/spinningup.html">original
+        Spinning Up essay</a>&nbsp;by Joshua Achiam. Both give very good advice about
+        deep RL experiments in general, and the latter has some specific suggestions of
+        projects to try. I followed Achiam's advice and, as I'd already done REINFORCE,
+        decided to follow the paper <a
+        href="https://www.cs.toronto.edu/~vmnih/docs/dqn.pdf">Playing
+        Atari with Deep Reinforcement Learning</a>&nbsp;by Mnih et al. For brevity and
+        clarity, I will call the overall algorithm DQN and refer to the Deep Q-Network
+        itself as the Q-net.</p> <p>I had seen Rahtz and others recommend the blog post
+
+        <a href="http://karpathy.github.io/2016/05/31/rl/">Pong from
+           Pixels</a>&nbsp;by Andrej Karpathy. I am generally very reluctant to
+       read tutorials or look at other implementations of the things that I am
+       trying to do because I can&rsquo;t shake the feeling that it&rsquo;s too
+       much like &lsquo;cheating&rsquo;. I think I sometimes take this too far,
+       but I decided I wouldn&rsquo;t look at that blog post or any other
+       implementations of DQN until after I&rsquo;d done it myself, and as of
+       writing this section, I have still not read it. In the next subsection I
+       will give my experience of implementing DQN on Pong, and in the one
+       after that I will read Pong from Pixels and evaluate whether I think I
+       learned more doing it my way, or if it would have been better to read it
+       from the start.</p> <h3 id="myexperience">My experience</h3> <p>The
+       theory behind DQN is strikingly simple if you are already familiar with
+       Q-Learning (described in section 6.5 of RLAI and countless online
+       tutorials). We simply replace the tabular Q-function with a
+       convolutional neural network that takes a sequence of pixel images as
+       input and update with gradient descent. The biggest difference is that
+       we make use of an experience replay buffer.
+        
+        <p>When you are doing RL, normally you process each reward as it comes,
+        either immediately after getting it (called online learning) or at the
+        end of the current episode (offline learning).  Q-learning is online,
+        and so typically each update is done on the current reward and then
+        that reward is discarded. Therefore each reward is used only once.
+        Online learning also means that all updates to our policy are done only
+        based on its most recent performance, which can for example cause the
+        policy to get stuck always selecting and updating on the same action.
+        If instead rewards are stored along with information about where the
+        reward came from (in an <em>experience replay buffer</em>) then each can
+        be used repeatedly. If we store a big enough buffer of these
+        experiences, then when we randomly sample from this buffer we will get
+        some experiences from when the policy was different, which can help to
+        avoid the issues of correlation between updates and the current policy
+        like getting stuck selecting the same action over and over.</p>
+
+        <p>I started by working on the 
+        <a href="https://gym.openai.com/envs/CartPole-v0/">
+        cart-pole environment
+        </a>
+        because
+        it requires a simpler policy and therefore I would be able to see if it was
+        working more easily. Here I ran into a theme that would continue to crop up:
+        most of my time was spent on getting the pieces around&nbsp;the learning
+        algorithm working, rather than the learning algorithm itself. Getting pixel
+        output from the cart-pole environment without it rendering every episode was a
+        bit tricky.</p> <p>My initial implementation of the experience buffer was lazy
+        but it worked. I&rsquo;d save every transition (state, action, reward, next
+        state) in full and then just sample the tuples as needed. Each state was built
+        of the four most recent frames (to preserve some notion of velocity), which
+        meant that each individual frame was stored eight times! This used up a
+        tremendous amount of memory and my poor laptop couldn&rsquo;t handle it once I
+        tried to store 100,000 of these transitions. I reworked it to store each
+        individual frame and references to which frames were needed to reconstruct each
+        state - this saved a lot of memory and meant I could actually run large
+        experiments. I could have saved even more memory by making use of the fact that
+        both cart-pole and Pong only use a few colours, but it worked without that.</p>
+        <p>I ran DQN for one million frames on the cart-pole environment and it learned!
+        Not perfectly, but it achieved a perfect score of 200 more than any other score
+        and got an average return of 129.</p> <p>Modifying the code to work with Pong
+        was surprisingly simple, but before I did that I had to set up the environment,
+        where the theme of my time being consumed by learning-adjacent issues
+        continued. I had forgotten that OpenAI Gym already had Pong and I spent over an
+        hour trying to set up the Arcade Learning Environment (ALE) from scratch before
+        finding someone mention the OpenAI implementation in an old issue on
+        ALE&rsquo;s GitHub page. This was all well and good for my laptop which runs
+        Linux, but when I tried to start a run on my Windows PC it failed and I had to
+        spend more time fixing that.</p> <p>When it finally came to modifying the code
+        for Pong, all I had to do was change the way pixel images were pre-processed, a
+        couple of parameters in the shape of the neural network, and the available
+        actions. I tailored the code specifically to Pong rather than have it be
+        general like in the paper. I initially had six possible actions but I reduced
+        it to just three - up, down, and do nothing. I also shifted the pixel data so
+        that the background colour was 0 to reduce its effect on the output of the
+        network.</p> <p>People often say that hyperparameters don&rsquo;t matter much
+        and that if it&rsquo;s not working then you&rsquo;ve probably got a bug. That
+        may be true, but hyperparameters can sometimes make or break an experiment and it can be
+        very difficult balancing a search for bugs that may not be there with tuning
+        hyperparameters and starting numerous lengthy runs. Using an optimiser with an
+        adaptive learning rate can reduce that burden but not eliminate it. As an
+        example, I somehow got it into my head that the original paper had used a
+        discount factor, gamma, of 0.99. I tried a run of one million frames (which
+        took eight hours, done overnight) and got nothing. It did no better than
+        random. I had a suspicion that it was because the discount factor was
+        flattening out any useful information so I tried 0.999 instead. This simple
+        change was enough to train an agent that had clearly learnt to move its paddle
+        in front of the ball and could return it a reasonable amount of the time.</p>
+        <p>I looked at a <a
+        href="http://htmlpreview.github.io/?https://github.com/openai/baselines/blob/master/benchmarks_atari10M.htm">benchmark
+        comparison</a>&nbsp;by OpenAI to get an idea of how long I&rsquo;d need to run
+        DQN for. It looks as if DQN had basically converged on Pong after a million
+        frames. Mine had not, so I tried a longer run of three million frames. To
+        facilitate this I spent a long time writing code that would allow me to pause a
+        run, which I was too afraid to use when it came to it because I was afraid it
+        would subtly break the run. Even after the full three million frames my agent
+        still lost most of the time, but put up a good fight and won fairly regularly.
+        I suspect that with different hyperparameters such as no discount rate and a
+        slightly higher learning rate (and possibly a larger experience buffer, the
+        size of which is also technically a hyperparameter) I could achieve better
+        performance, but I don&rsquo;t want to get caught in the same trap of
+        repeatedly making small changes to something that basically works.</p>
+        <p>Overall I learned a lot about the intricacies of implementing a deep RL
+        model and some of the potential failure modes. I spent at least 19 hours
+        working on it, plus all of the tweaking and plotting
+        I did between runs. I&rsquo;m interested to see now how much time reading Pong
+        from Pixels would have saved me, and if I still think it would have been
+        &lsquo;cheating&rsquo;.</p> 
+        <h3 id="afterreading">After reading</h3>
+
+        <p>I see now that Karpathy&rsquo;s blog post follows a different path
+        and does not cover DQN. The post is excellent at building intuition for
+        policy gradients and for the RL approach to the credit assignment
+        problem in general. I feel like his post would not be sufficient to
+        solve Pong from scratch without copying his code verbatim. I will admit
+        that I was expecting it to be more in-depth with step by step
+        instructions, but the fault lies with my expectations and not with the
+        post.</p> <p>I certainly don&rsquo;t think it would have been
+        &lsquo;cheating&rsquo; to read &lsquo;Pong from Pixels&rsquo; ahead of
+        time, especially as it uses a policy gradient method rather than a
+        value function one. I would recommend reading it but not being
+        discouraged if you still don&rsquo;t understand how it works
+        afterwards. Neither his post nor mine gives enough detail to do it all
+        from scratch. However if it does get you interested, in my experience
+        <a href="http://incompleteideas.net/book/the-book.html">Sutton and
+           Barto&rsquo;s book</a>&nbsp;is a great place to start.</p>
+
+        <p><br>
+        All my (rather messy) code is available on <a
+            href="https://www.github.com/naimenz/DQN">GitHub</a>.  This is my
+        first attempt at a piece of writing like this so if you have any
+        comments on content and/or style please do let me know.</p>
+      </div>
+
+      <div class="right">
+          <iframe src="/sine/index.html" frameborder="0" height="700px" width="100%"></iframe>
+      </div>
+   </body>
+</html>
+
